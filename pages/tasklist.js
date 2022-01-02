@@ -19,11 +19,9 @@ export default function Home({dbTasks}) {
         })
 
         const postData = {taskId: taskId, isDone: isDone}
-        console.log(postData)
         fetch('/api/update/isDone', {
             headers: {
                 'Content-Type': "application/json",
-                
             },
             method: "POST",
             body: JSON.stringify(postData)
@@ -46,16 +44,16 @@ export default function Home({dbTasks}) {
     )
 }
 
-export async function getServerSideProps(context) {
+export async function getServerSideProps() {
     const oldDbTasks = await prismaExecute.read.tasks()
     const dbTasks = oldDbTasks.map(task => {
         return {
-            id: 1,
+            id: task.id,
             createdAt: moment(task.createdAt).format("DD/MM/YYYY"),
             updatedAt: moment(task.updatedAt).format("DD/MM/YYYY"),
-            title: 'Make 2022 a incredible year',
-            content: "Let's go",
-            isDone: true
+            title: task.title,
+            content: task.content,
+            isDone: task.isDone
         }
     })
     return {
