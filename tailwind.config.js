@@ -5,6 +5,10 @@ module.exports = {
   ],
   theme: {
     extend: {},
+    screen: {
+      "3xl": '1536px'
+    }
   },
   plugins: [],
 }
+

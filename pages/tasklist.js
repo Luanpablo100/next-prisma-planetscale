@@ -38,7 +38,7 @@ export default function Home({dbTasks}) {
             <h1 className="text-4xl my-3">Tarefas</h1>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-1 md:gap-3">
                 {tasks.map(task => (
-                    <Task task={task} changeChecked={changeChecked}/>
+                    <Task task={task} changeChecked={changeChecked} key={task.id}/>
                 )
                 )}
             </div>
