@@ -1,6 +1,10 @@
 import Link from "next/link";
 import Container from "../components/Container";
 
+import moment from "moment";
+
+import prismaExecute from "../prisma/commands";
+
 import { useState } from "react";
 
 import Task from "../components/Task";
@@ -43,12 +47,17 @@ export default function Home({dbTasks}) {
 }
 
 export async function getServerSideProps(context) {
-    const tasksData = await fetch('http://localhost:3000/api/read/tasks', {
-        headers: {
-            "Content-Type":"application/json"
+    const oldDbTasks = await prismaExecute.read.tasks()
+    const dbTasks = oldDbTasks.map(task => {
+        return {
+            id: 1,
+            createdAt: moment(task.createdAt).format("DD/MM/YYYY"),
+            updatedAt: moment(task.updatedAt).format("DD/MM/YYYY"),
+            title: 'Make 2022 a incredible year',
+            content: "Let's go",
+            isDone: true
         }
     })
-    const dbTasks = await tasksData.json()
     return {
       props: {dbTasks}, // will be passed to the page component as props
     }
