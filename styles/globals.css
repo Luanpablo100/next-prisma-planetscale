@@ -4,6 +4,21 @@
 @tailwind components;
 @tailwind utilities;
 
-.img-test {
-    display: none;
+body::-webkit-scrollbar {
+width: 5px;               /* width of the entire scrollbar */
+}
+  
+body::-webkit-scrollbar-track {
+background: #D87046;        /* color of the tracking area */
+}
+  
+body::-webkit-scrollbar-thumb {
+background-color: #8B69B6;    /* color of the scroll thumb */
+border-radius: 20px;       /* roundness of the scroll thumb */
+border: 3px solid #8B69B6;  /* creates padding around scroll thumb */
+}
+
+body {
+scrollbar-width: thin;          /* "auto" or "thin" */
+scrollbar-color: #8B69B6 D87046;   /* scroll thumb and track */
 }

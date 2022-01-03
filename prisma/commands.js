@@ -1,3 +1,4 @@
+import moment, { now } from "moment";
 import prisma from "../lib/prisma"
 
 const prismaExecute = {
@@ -42,6 +43,27 @@ const prismaExecute = {
                 }
             })
 
+            .catch((e) => {
+                throw e;
+                })
+            .finally(async () => {
+            await prisma.$disconnect();
+            });
+
+            return changedTask
+        },
+        task: async (id,tasktitle, taskcontent, isDone) => {
+            const changedTask = await prisma.task.update({
+                where: {
+                    id: id
+                },
+                data: {
+                    title: tasktitle,
+                    content: taskcontent,
+                    // updatedAt: moment(now()).format(),
+                    isDone: isDone
+                }
+            })
             .catch((e) => {
                 throw e;
                 })
