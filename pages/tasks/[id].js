@@ -3,6 +3,7 @@ import Router from "next/router";
 
 import Container from '../../components/Container'
 
+import { ImCheckboxUnchecked, ImCheckboxChecked } from 'react-icons/im'
 import { FiTrash2, FiSave } from 'react-icons/fi'
 
 import { useEffect, useState, Fragment } from "react";
@@ -133,6 +134,19 @@ export default function Home({dbtask}) {
 
         openModal()
     }
+    
+    function changeChecked(taskId, isDone) {
+    const postData = {taskId: taskId, isDone: isDone}
+    fetch('/api/update/isDone', {
+        headers: {
+            'Content-Type': "application/json",
+        },
+        method: "POST",
+        body: JSON.stringify(postData)
+    })
+
+    setTask({...task, isDone: !isDone})
+    }
 
  return (
      <Container>
@@ -148,6 +162,7 @@ export default function Home({dbtask}) {
             <div className="flex w-full justify-evenly">
                 <FiTrash2 size={40} className="cursor-pointer hover:text-red-500" onClick={deleteTask}/>
                 <FiSave size={40} className="cursor-pointer hover:text-green-500" onClick={updateTask}/>
+                {task.isDone ? <ImCheckboxChecked size={40} className="cursor-pointer" onClick={() => changeChecked(task.id, task.isDone)}/>: <ImCheckboxUnchecked size={40} className="cursor-pointer"  onClick={() => changeChecked(task.id, task.isDone)}/>}
             </div>
         </div>
         {MyModal()}

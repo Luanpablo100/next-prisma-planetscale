@@ -118,12 +118,14 @@ export default function Home() {
          </div>
         <div className="mx-4 md:w-1/2 break-words border border-white rounded p-4"> 
             <form onSubmit={createTask}>
-                <input className="bg-transparent focus:outline-none text-4xl h-full w-full border-b-2 border-bottom-white mb-2" id="input-title"/>
-                <textarea className="bg-transparent w-full h-full text-xl focus:outline-none" rows="5" id="input-content">
+                <label htmlFor="input-title">Título</label>
+                <input name="input-title" className="bg-transparent focus:outline-none text-4xl h-full w-full border-b-2 border-bottom-white mb-2" id="input-title"/>
+                <label htmlFor="input-content">Descrição</label>
+                <textarea name="input-content" className="bg-transparent w-full h-full text-xl focus:outline-none" rows="5" id="input-content">
                 </textarea>
             </form>
             <div className="flex w-full justify-evenly">
-                <FiSave size={40} className="cursor-pointer hover:text-green-500" onClick={createTask}/>
+                <FiSave size={50} className="cursor-pointer hover:text-green-500" onClick={createTask}/>
             </div>
         </div>
         {MyModal()}
