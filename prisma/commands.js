@@ -73,6 +73,44 @@ const prismaExecute = {
 
             return changedTask
         }
+    },
+    create: {
+        task: async (taskTitle, taskContent) => {
+            const newTask = await prisma.task.create({
+                data: {
+                    title: taskTitle,
+                    content: taskContent,
+                    isDone: false
+                }
+            })
+
+            .catch((e) => {
+                throw e;
+                })
+            .finally(async () => {
+            await prisma.$disconnect();
+            });
+
+            return newTask
+        }
+    },
+    delete: {
+        task: async(taskId) => {
+            const deletedTask = await prisma.task.delete({
+                where: {
+                    id: taskId
+                }
+            })
+
+            .catch((e) => {
+                throw e;
+                })
+            .finally(async () => {
+            await prisma.$disconnect();
+            });
+
+            return deletedTask
+        }
     }
 }
 

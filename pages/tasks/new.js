@@ -1,21 +1,17 @@
+import Container from "../../components/Container";
 import Link from "next/link";
 import Router from "next/router";
 
-import Container from '../../components/Container'
+import { FiSave } from 'react-icons/fi'
 
-import { FiTrash2, FiSave } from 'react-icons/fi'
 
-import { useEffect, useState, Fragment } from "react";
+
+import { Fragment, useState } from 'react'
 
 import { Dialog, Transition } from '@headlessui/react'
 
-import moment from 'moment'
 
-import prismaExecute from '../../prisma/commands'
-
-export default function Home({dbtask}) {
-    const [task, setTask] = useState(dbtask)
-
+export default function Home() {
     let [isOpen, setIsOpen] = useState(false)
 
     function closeModal() {
@@ -26,8 +22,8 @@ export default function Home({dbtask}) {
       function openModal() {
         setIsOpen(true)
       }
-
-      function MyModal() {
+    
+    function MyModal() {
 
         return (
             <>
@@ -71,11 +67,11 @@ export default function Home({dbtask}) {
                         as="h3"
                         className="text-lg font-medium leading-6 text-gray-900"
                         >
-                        Tarefa apagada!
+                        Tarefa criada!
                         </Dialog.Title>
                         <div className="mt-2">
                         <p className="text-sm text-gray-500">
-                            Redirecionando para a lista.
+                            Volte para a lista para ver.
                         </p>
                         </div>
 
@@ -97,75 +93,40 @@ export default function Home({dbtask}) {
         )
     }
 
-    useEffect(() => {
-        const inputTitle = document.getElementById('input-title');
-        const inputtContent = document.getElementById('input-content');
-        inputTitle.value = task.title
-        inputtContent.value = task.content
-    })
-
-    async function updateTask(event) {
-        event.preventDefault()
-        const titleValue = document.getElementById('input-title').value
-        const contentValue = document.getElementById('input-content').value
-        const postData = {taskId:task.id, taskTitle:titleValue, taskContent:contentValue, isDone:task.isDone}
-        const updatedTaskData = await fetch('/api/update/task', {
+    async function createTask() {
+        const taskTitle = document.getElementById('input-title').value
+        const taskContent = document.getElementById('input-content').value
+        const putData = {taskTitle: taskTitle, taskContent:taskContent}
+        
+        const createdTask = await fetch('/api/create/task', {
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': "application/json",
             },
-            method: "POST",
-            body: JSON.stringify(postData)
-        })
-        const updatedTask = await updatedTaskData.json()
-        setTask(updatedTask)
-    }
-
-    async function deleteTask() {
-        const taskId = task.id
-        const deleteData = {taskId: taskId}
-        const deletedTask = await fetch('/api/delete/task', {
-            headers: {
-                "Content-Type": "application/json"
-            },
-            method: "DELETE",
-            body: JSON.stringify(deleteData)
-        })
-
+            method: "PUT",
+            body: JSON.stringify(putData)
+            }
+        )
+        
         openModal()
     }
 
- return (
-     <Container>
-         <div className="mb-3">
+    return (
+
+        <Container>
+        <div className="mb-3">
             <Link href={'/tasklist'}><a className="text-2xl hover:underline underline-offset-2">Voltar</a></Link>
          </div>
         <div className="mx-4 md:w-1/2 break-words border border-white rounded p-4"> 
-            <form onSubmit={updateTask}>
+            <form onSubmit={createTask}>
                 <input className="bg-transparent focus:outline-none text-4xl h-full w-full border-b-2 border-bottom-white mb-2" id="input-title"/>
                 <textarea className="bg-transparent w-full h-full text-xl focus:outline-none" rows="5" id="input-content">
-            </textarea>
+                </textarea>
             </form>
             <div className="flex w-full justify-evenly">
-                <FiTrash2 size={40} className="cursor-pointer hover:text-red-500" onClick={deleteTask}/>
-                <FiSave size={40} className="cursor-pointer hover:text-green-500" onClick={updateTask}/>
+                <FiSave size={40} className="cursor-pointer hover:text-green-500" onClick={createTask}/>
             </div>
         </div>
         {MyModal()}
      </Container>
- )
+    )
 }
-
-export async function getServerSideProps(context) {
-    const oldTask = await prismaExecute.read.task(parseInt(context.params.id))
-    const dbtask = {
-        id: oldTask.id,
-        createdAt: moment(oldTask.createdAt).format("DD/MM/YYYY"),
-        updatedAt: moment(oldTask.updatedAt).format("DD/MM/YYYY"),
-        title: oldTask.title,
-        content: oldTask.content,
-        isDone: oldTask.isDone
-    }
-    return {
-      props: {dbtask}, // will be passed to the page component as props
-    }
-  }
